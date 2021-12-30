@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                     Int                      @id @default(autoincrement())
+  name                   String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime?                @updatedAt
+  UsersOnOrganization    UsersOnOrganization[]
+  ProjectsOnOrganization ProjectsOnOrganization[]
+  UsersOnProject         UsersOnProject[]
+}
+
+model Project {
+  id                     Int                      @id @default(autoincrement())
+  name                   String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime?                @updatedAt
+  ProjectsOnOrganization ProjectsOnOrganization[]
+  UsersOnProject         UsersOnProject[]
+}
+
+model User {
+  id                  String                @id
+  email               String                @unique
+  name                String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime?             @updatedAt
+  UsersOnOrganization UsersOnOrganization[]
+  UsersOnProject      UsersOnProject[]
+}
+
+model UsersOnOrganization {
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+
+
+  assignedAt DateTime  @default(now())
+  assignedBy String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@id([userId, organizationId])
+}
+
+model ProjectsOnOrganization {
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+
+  @@id([projectId, organizationId])
+}
+
+model UsersOnProject {
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  Organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId Int?
+
+  @@id([projectId, userId])
+}
+
+enum FeatureType {
+  JSON
+  BOOLEAN
+  TEXT
+  NUMBER
+}
+
+model Feature {
+  id          Int         @id @default(autoincrement())
+  enabled     Boolean     @default(false)
+  name        String
+  description String?
+  value       String
+  type        FeatureType @default(TEXT)
+  tags        String[]
+  archived    Boolean     @default(false)
+
+  environment   Environment @relation(fields: [environmentId], references: [id])
+  environmentId Int
+}
+
+model Environment {
+  id     Int    @id @default(autoincrement())
+  name   String
+  apiKey String @unique
+
+  Feature     Feature[]
+  FeatureUser FeatureUser[]
+}
+
+model FeatureUser {
+  id String @unique
+
+  environment   Environment @relation(fields: [environmentId], references: [id])
+  environmentId Int
+
+  FeatureUserAttribute FeatureAttribute[]
+  @@id([environmentId])
+}
+
+model FeatureAttribute {
+  id            String      @unique
+  value         String
+  featureUser   FeatureUser @relation(fields: [featureUserId], references: [id])
+  featureUserId String
+
+  @@id([featureUserId])
+}
+
+model TesteBase {
+  id   String @unique
+  nome String @db.VarChar(90)
+}

@@ -1,0 +1,35 @@
+.root {
+  @apply bg-indigo-700 text-white cursor-pointer inline-flex px-10 rounded-lg leading-6  transition ease-in-out duration-150 shadow-sm font-semibold text-center justify-center uppercase py-4 border border-transparent items-center;
+}
+
+.root:hover {
+  @apply opacity-70;
+}
+
+.root:focus {
+  @apply outline-none ring-2 ring-purple-400 ring-opacity-70;
+}
+
+.root[data-active] {
+  @apply bg-gray-600;
+}
+
+.loading {
+  @apply cursor-not-allowed;
+}
+
+.slim {
+  @apply py-3 transform-none normal-case;
+}
+
+.secundary {
+  @apply py-3 transform-none normal-case bg-gray-800 border-gray-300;
+}
+
+.disabled,
+.disabled:hover {
+  @apply cursor-not-allowed opacity-50;
+  -webkit-transform: translateZ(0);
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+}
