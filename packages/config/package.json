@@ -1,0 +1,22 @@
+{
+  "name": "@nodis-functions/config",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "eslint-preset.js",
+    "tsconfig-base.json"
+  ],
+  "dependencies": {
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^3.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.3"
+  }
+}

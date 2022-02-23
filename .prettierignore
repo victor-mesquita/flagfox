@@ -1,0 +1,10 @@
+# Ignore :
+node_modules
+*.log
+.DS_STORE
+dist/
+.serverless/
+.webpack/
+.webpackCache/
+.build/
+.env*

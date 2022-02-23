@@ -1,0 +1,40 @@
+{
+  "name": "@nodis-functions/core",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "lint": "TIMING=1 eslint src --fix",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "postinstall": "npx prisma generate"
+  },
+  "dependencies": {
+    "@expo/match-media": "^0.3.0",
+    "@prisma/client": "^3.10.0",
+    "lodash.get": "^4.4.2",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "peerDependencies": {
+    "react-native-web": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@nodis-functions/config": "*",
+    "@types/lodash.get": "^4.4.6",
+    "prisma": "^3.10.0",
+    "tsup": "^5.10.1",
+    "typescript": "^4.5.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,259 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model EFMigrationsHistory {
+  migration_id    String @id(map: "pk___ef_migrations_history") @db.VarChar(150)
+  product_version String @db.VarChar(32)
+
+  @@map("__EFMigrationsHistory")
+}
+
+model aceite {
+  loja_id                      String    @db.Uuid
+  termo_id                     String    @db.Uuid
+  data_aceite_dt               DateTime  @db.Timestamptz(6)
+  ip_ds                        String?
+  identificador_dispositivo_ds String?
+  url_evidencia_ds             String?
+  criado_em_dt                 DateTime  @db.Timestamptz(6)
+  criado_por_id                String    @db.Uuid
+  atualizado_em_dt             DateTime? @db.Timestamptz(6)
+  atualizado_por_id            String?   @db.Uuid
+  deletado_em_dt               DateTime? @db.Timestamptz(6)
+  deletado_por_id              String?   @db.Uuid
+  loja                         loja      @relation(fields: [loja_id], references: [loja_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_aceite_loja_loja_id")
+  termo                        termo     @relation(fields: [termo_id], references: [termo_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_aceite_termo_termo_id")
+
+  @@id([loja_id, termo_id, data_aceite_dt], map: "pk_aceite")
+  @@index([termo_id], map: "ix_aceite_termo_id")
+}
+
+model acesso {
+  usuario_id         String    @db.Uuid
+  loja_id            String    @db.Uuid
+  inicio_vigencia_dt DateTime  @db.Timestamptz(6)
+  fim_vigencia_dt    DateTime? @db.Timestamptz(6)
+  perfil_id          String    @db.Uuid
+  criado_em_dt       DateTime  @db.Timestamptz(6)
+  criado_por_id      String    @db.Uuid
+  atualizado_em_dt   DateTime? @db.Timestamptz(6)
+  atualizado_por_id  String?   @db.Uuid
+  deletado_em_dt     DateTime? @db.Timestamptz(6)
+  deletado_por_id    String?   @db.Uuid
+  loja               loja      @relation(fields: [loja_id], references: [loja_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_acesso_loja_loja_id")
+  perfil             perfil    @relation(fields: [perfil_id], references: [perfil_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_acesso_perfil_perfil_id")
+  usuario            usuario   @relation(fields: [usuario_id], references: [usuario_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_acesso_usuario_usuario_id")
+
+  @@id([usuario_id, loja_id, inicio_vigencia_dt], map: "pk_acesso")
+  @@index([loja_id], map: "ix_acesso_loja_id")
+  @@index([perfil_id], map: "ix_acesso_perfil_id")
+}
+
+model codigo_verificacao {
+  codigo_verificacao_id String    @id(map: "pk_codigo_verificacao") @db.Uuid
+  codigo_nu             Int
+  enviado_em_dt         DateTime  @db.Timestamptz(6)
+  validado_em_dt        DateTime? @db.Timestamptz(6)
+  expira_em_dt          DateTime  @db.Timestamptz(6)
+  fator_autenticacao_ds String
+  identificador_ds      String?   @db.Citext
+  criado_em_dt          DateTime  @db.Timestamptz(6)
+  criado_por_id         String    @db.Uuid
+  atualizado_em_dt      DateTime? @db.Timestamptz(6)
+  atualizado_por_id     String?   @db.Uuid
+  deletado_em_dt        DateTime? @db.Timestamptz(6)
+  deletado_por_id       String?   @db.Uuid
+}
+
+model conta_bancaria {
+  loja_id                   String                 @db.Uuid
+  inicio_vigencia_dt        DateTime               @db.Timestamptz(6)
+  instituicao_financeira_id String                 @db.Uuid
+  agencia_ds                String?
+  conta_ds                  String?
+  criado_em_dt              DateTime               @db.Timestamptz(6)
+  criado_por_id             String                 @db.Uuid
+  atualizado_em_dt          DateTime?              @db.Timestamptz(6)
+  atualizado_por_id         String?                @db.Uuid
+  deletado_em_dt            DateTime?              @db.Timestamptz(6)
+  deletado_por_id           String?                @db.Uuid
+  instituicao_financeira    instituicao_financeira @relation(fields: [instituicao_financeira_id], references: [instituicao_financeira_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_conta_bancaria_instituicao_financeira_instituicao_financeir")
+  loja                      loja                   @relation(fields: [loja_id], references: [loja_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_conta_bancaria_loja_loja_id")
+
+  @@id([loja_id, inicio_vigencia_dt], map: "pk_conta_bancaria")
+  @@index([instituicao_financeira_id], map: "ix_conta_bancaria_instituicao_financeira_id")
+}
+
+model credenciamento {
+  loja_id            String    @db.Uuid
+  inicio_vigencia_dt DateTime  @db.Timestamptz(6)
+  fim_vigencia_dt    DateTime? @db.Timestamptz(6)
+  iniciado_em_dt     DateTime  @db.Timestamptz(6)
+  finalizado_em_dt   DateTime? @db.Timestamptz(6)
+  criado_em_dt       DateTime  @db.Timestamptz(6)
+  criado_por_id      String    @db.Uuid
+  atualizado_em_dt   DateTime? @db.Timestamptz(6)
+  atualizado_por_id  String?   @db.Uuid
+  deletado_em_dt     DateTime? @db.Timestamptz(6)
+  deletado_por_id    String?   @db.Uuid
+  loja               loja      @relation(fields: [loja_id], references: [loja_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_credenciamento_loja_loja_id")
+
+  @@id([loja_id, inicio_vigencia_dt], map: "pk_credenciamento")
+}
+
+model endereco {
+  endereco_id       String    @id(map: "pk_endereco") @db.Uuid
+  loja_id           String    @db.Uuid
+  fiscal_fl         Boolean
+  logistico_fl      Boolean
+  cep_ds            String?
+  estado_ds         String?
+  cidade_ds         String?
+  bairro_ds         String?
+  logradouro_ds     String?
+  numero_ds         String?
+  complemento_ds    String?
+  latitude_ds       String?
+  longitude_ds      String?
+  criado_em_dt      DateTime  @db.Timestamptz(6)
+  criado_por_id     String    @db.Uuid
+  atualizado_em_dt  DateTime? @db.Timestamptz(6)
+  atualizado_por_id String?   @db.Uuid
+  deletado_em_dt    DateTime? @db.Timestamptz(6)
+  deletado_por_id   String?   @db.Uuid
+  loja              loja      @relation(fields: [loja_id], references: [loja_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_endereco_loja_loja_id")
+
+  @@index([loja_id], map: "ix_endereco_loja_id")
+}
+
+model instituicao_financeira {
+  instituicao_financeira_id String           @id(map: "pk_instituicao_financeira") @db.Uuid
+  codigo_ds                 String           @unique(map: "ak_instituicao_financeira_codigo")
+  nome_ds                   String?
+  nome_abreviado_ds         String?
+  grupo_stone_fl            Boolean
+  criado_em_dt              DateTime         @db.Timestamptz(6)
+  criado_por_id             String           @db.Uuid
+  atualizado_em_dt          DateTime?        @db.Timestamptz(6)
+  atualizado_por_id         String?          @db.Uuid
+  deletado_em_dt            DateTime?        @db.Timestamptz(6)
+  deletado_por_id           String?          @db.Uuid
+  conta_bancaria            conta_bancaria[]
+}
+
+model loja {
+  loja_id                                 String           @id(map: "pk_loja") @db.Uuid
+  cnpj_nu                                 BigInt           @unique(map: "ak_loja_cnpj")
+  razao_social_ds                         String?
+  nome_fantasia_ds                        String?
+  inscricao_estadual_ds                   String?
+  natureza_juridica_ds                    String?
+  inicio_atividade_dt                     DateTime?        @db.Timestamptz(6)
+  validacao_cnpj_ds                       Json?
+  data_validacao_cnpj_dt                  DateTime?        @db.Timestamptz(6)
+  nibo_id_ds                              String?
+  salesforce_id_ds                        String?
+  onbordado_fl                            Boolean
+  criado_em_dt                            DateTime         @db.Timestamptz(6)
+  criado_por_id                           String           @db.Uuid
+  atualizado_em_dt                        DateTime?        @db.Timestamptz(6)
+  atualizado_por_id                       String?          @db.Uuid
+  deletado_em_dt                          DateTime?        @db.Timestamptz(6)
+  deletado_por_id                         String?          @db.Uuid
+  emite_nfe_fl                            Boolean          @default(false)
+  margem_garantida_habilitado_fl          Boolean          @default(false)
+  reprecificacao_automatica_habilitada_fl Boolean          @default(false)
+  aceite                                  aceite[]
+  acesso                                  acesso[]
+  conta_bancaria                          conta_bancaria[]
+  credenciamento                          credenciamento[]
+  endereco                                endereco[]
+  tarefa                                  tarefa[]
+}
+
+model perfil {
+  perfil_id         String    @id(map: "pk_perfil") @db.Uuid
+  nome_ds           String?
+  criado_em_dt      DateTime  @db.Timestamptz(6)
+  criado_por_id     String    @db.Uuid
+  atualizado_em_dt  DateTime? @db.Timestamptz(6)
+  atualizado_por_id String?   @db.Uuid
+  deletado_em_dt    DateTime? @db.Timestamptz(6)
+  deletado_por_id   String?   @db.Uuid
+  acesso            acesso[]
+}
+
+model prefixo_internacional {
+  prefixo_internacional_id String    @id(map: "pk_prefixo_internacional") @db.Uuid
+  codigo_nu                Int
+  pais_ds                  String    @unique(map: "ak_prefixo_internacional_pais")
+  criado_em_dt             DateTime  @db.Timestamptz(6)
+  criado_por_id            String    @db.Uuid
+  atualizado_em_dt         DateTime? @db.Timestamptz(6)
+  atualizado_por_id        String?   @db.Uuid
+  deletado_em_dt           DateTime? @db.Timestamptz(6)
+  deletado_por_id          String?   @db.Uuid
+}
+
+model tarefa {
+  tarefa_id              String    @id(map: "pk_tarefa") @db.Uuid
+  loja_id                String?   @db.Uuid
+  usuario_id             String?   @db.Uuid
+  tipo_ds                String
+  quantidade_pendente_nu Int
+  concluida_por_id       String?   @db.Uuid
+  concluida_em_dt        DateTime? @db.Timestamptz(6)
+  pai_id                 String?   @db.Uuid
+  criado_em_dt           DateTime  @db.Timestamptz(6)
+  criado_por_id          String    @db.Uuid
+  atualizado_em_dt       DateTime? @db.Timestamptz(6)
+  atualizado_por_id      String?   @db.Uuid
+  deletado_em_dt         DateTime? @db.Timestamptz(6)
+  deletado_por_id        String?   @db.Uuid
+  loja                   loja?     @relation(fields: [loja_id], references: [loja_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tarefa_loja_loja_id")
+  tarefa                 tarefa?   @relation("tarefaTotarefa_pai_id", fields: [pai_id], references: [tarefa_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tarefa_tarefa_pai_id")
+  usuario                usuario?  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tarefa_usuario_usuario_id")
+  other_tarefa           tarefa[]  @relation("tarefaTotarefa_pai_id")
+
+  @@index([loja_id], map: "ix_tarefa_loja_id")
+  @@index([pai_id], map: "ix_tarefa_pai_id")
+  @@index([usuario_id], map: "ix_tarefa_usuario_id")
+}
+
+model termo {
+  termo_id          String    @id(map: "pk_termo") @db.Uuid
+  versao_nu         Int
+  conteudo_ds       String?
+  tipo_ds           String
+  criado_em_dt      DateTime  @db.Timestamptz(6)
+  criado_por_id     String    @db.Uuid
+  atualizado_em_dt  DateTime? @db.Timestamptz(6)
+  atualizado_por_id String?   @db.Uuid
+  deletado_em_dt    DateTime? @db.Timestamptz(6)
+  deletado_por_id   String?   @db.Uuid
+  aceite            aceite[]
+}
+
+model usuario {
+  usuario_id        String    @id(map: "pk_usuario") @db.Uuid
+  cpf_nu            BigInt    @unique(map: "ak_usuario_cpf")
+  nome_ds           String?
+  sobrenome_ds      String?
+  email_ds          String?   @unique(map: "ix_usuario_email") @db.Citext
+  celular_ds        String?
+  keycloak_id_ds    String?
+  criado_em_dt      DateTime  @db.Timestamptz(6)
+  criado_por_id     String    @db.Uuid
+  atualizado_em_dt  DateTime? @db.Timestamptz(6)
+  atualizado_por_id String?   @db.Uuid
+  deletado_em_dt    DateTime? @db.Timestamptz(6)
+  deletado_por_id   String?   @db.Uuid
+  acesso            acesso[]
+  tarefa            tarefa[]
+}
